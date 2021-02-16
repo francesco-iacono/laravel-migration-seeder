@@ -25,7 +25,7 @@ class ArticleController extends Controller
      */
     public function create()
     {
-        //
+        return view("articles.create");
     }
 
     /**
@@ -36,7 +36,22 @@ class ArticleController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data = $request->all();
+        
+        $request->validate(
+            [
+                'title'  => 'required|max:100',
+                'subtitle' => 'required|max:100',
+                'author' => 'required|max:40',
+                'genre' => 'required|max:15'
+        ]);
+
+        $article = new Article();
+        $article->fill($data);
+        $result = $article->save();
+
+        $newArticle = Article::orderBy('id', 'DESC')->first();
+        return redirect()->route('articles.show', $newArticle);
     }
 
     /**
@@ -45,9 +60,10 @@ class ArticleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Article $article)
     {
-        //
+        return view('articles.show', compact('article'));
+        
     }
 
     /**
@@ -56,9 +72,9 @@ class ArticleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Article $article)
     {
-        //
+        return view('articles.edit', compact('article'));
     }
 
     /**
@@ -68,9 +84,22 @@ class ArticleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Article $article)
     {
-        //
+        $data = $request->all();
+        $request->validate(
+        [
+            'title'  => 'required|max:100',
+            'subtitle' => 'required|max:100',
+            'author' => 'required|max:40',
+            'genre' => 'required|max:15'
+        ]);
+
+        $article->update($data);
+        /* dd($article); */
+        return redirect()
+        ->route('articles.index')
+        ->with('message', 'Il tuo articolo '. $article->title .  ' è stata modificata correttamente!');
     }
 
     /**
@@ -79,8 +108,12 @@ class ArticleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Article $article)
     {
-        //
+        $article->delete();
+        /* dd($article); */
+        return redirect()
+        ->route('articles.index')
+        ->with('message', 'L\'articlolo '. $article->title .  ' è stata cancellata correttamente!');
     }
 }
