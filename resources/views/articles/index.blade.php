@@ -58,6 +58,6 @@
     </tbody>
   </table> 
   <div class="text-right">
-    <a href="{{ route('articles.create') }}" class="btn btn-lg btn-primary">Nuova birra</a>
+    <a href="{{ route('articles.create') }}" class="btn btn-lg btn-primary">Nuovo Articolo</a>
   </div>   
 @endsection
